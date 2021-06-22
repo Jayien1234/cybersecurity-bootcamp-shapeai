@@ -1,0 +1,196 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Jayien Mathew",
+      "provenance": []
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "huV89YK3oz2r",
+        "outputId": "30604095-7c22-4f99-bab2-b83076c6704b"
+      },
+      "source": [
+        " \n",
+        "import requests\n",
+        " \n",
+        "from datetime import datetime\n",
+        " \n",
+        "api_key = '50cc1a5dffcd7b06f853af0ce318be4d'\n",
+        " \n",
+        "location = input(\"Enter the city name: \")\n",
+        " \n",
+        "complete_api_link = \"https://api.openweathermap.org/data/2.5/weather?q=\"+location+\"&appid=\"+api_key\n",
+        " \n",
+        "api_link = requests.get(complete_api_link)\n",
+        " \n",
+        "api_data = api_link.json()\n",
+        " \n",
+        "temp_city = ((api_data['main']['temp']) - 273.15)\n",
+        " \n",
+        "weather_desc = api_data['weather'][0]['description']\n",
+        " \n",
+        "hmdt = api_data['main']['humidity']\n",
+        " \n",
+        "wind_spd = api_data['wind' ]['speed']\n",
+        " \n",
+        "date_time = datetime.now() .strftime (\"%d %b %Y | % I: %M:%S %p\")\n",
+        "print (\"-----------------------------------------------------------------\")\n",
+        " \n",
+        "print (\"Weather Status for- {} Il {}\".format(location.upper(), date_time))\n",
+        " \n",
+        "print(\"------------------------------------------------------------------\")\n",
+        " \n",
+        "print (\"Current temperature is:{:.2f} deg C\".format(temp_city))\n",
+        " \n",
+        "print (\"Current weather desc, :\",weather_desc)\n",
+        " \n",
+        "print (\"Current Humidity       :\", hmdt, '%')\n",
+        " \n",
+        "print (\"Current wind speed     :\",wind_spd, 'kmph')"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Enter the city name: Kottayam\n",
+            "-----------------------------------------------------------------\n",
+            "Weather Status for- KOTTAYAM Il 22 Jun 2021 | % I: 01:38 AM\n",
+            "------------------------------------------------------------------\n",
+            "Current temperature is:29.01 deg C\n",
+            "Current weather desc, : overcast clouds\n",
+            "Current Humidity       : 72 %\n",
+            "Current wind speed     : 3.87 kmph\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "WZHP5z7H6tJN",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 352
+        },
+        "outputId": "cc2ea43b-f22e-4bd3-d423-bc1242f2c9a1"
+      },
+      "source": [
+        "import requests \n",
+        "# to get data from website \n",
+        " \n",
+        "file = requests.get(\"https://weather.com/en-IN/weather/tenday/l/INKA0344:1:IN\")\n",
+        "# import Beautifulsoup for scraping the data  \n",
+        " \n",
+        "from bs4 import BeautifulSoup \n",
+        " \n",
+        "soup = BeautifulSoup(file.content, \"html.parser\")\n",
+        "# create empty list \n",
+        " \n",
+        "list =[] \n",
+        " \n",
+        "all = soup.find(\"div\", {\"class\":\"locations-title ten-day-page-title\"}).find(\"h1\").text \n",
+        " \n",
+        "   \n",
+        "# find all table with class-\"twc-table\" \n",
+        " \n",
+        "content = soup.find_all(\"table\", {\"class\":\"twc-table\"}) \n",
+        " \n",
+        "for items in content: \n",
+        " \n",
+        "    for i in range(len(items.find_all(\"tr\"))-1): \n",
+        " \n",
+        "                # create empty dictionary \n",
+        " \n",
+        "        dict = {} \n",
+        " \n",
+        "        try:    \n",
+        " \n",
+        "                        # assign value to given key  \n",
+        " \n",
+        "  \n",
+        " \n",
+        "            dict[\"day\"]= items.find_all(\"span\", {\"class\":\"date-time\"})[i].text \n",
+        " \n",
+        "            dict[\"date\"]= items.find_all(\"span\", {\"class\":\"day-detail\"})[i].text             \n",
+        " \n",
+        "            dict[\"desc\"]= items.find_all(\"td\", {\"class\":\"description\"})[i].text \n",
+        " \n",
+        "            dict[\"temp\"]= items.find_all(\"td\", {\"class\":\"temp\"})[i].text \n",
+        " \n",
+        "            dict[\"precip\"]= items.find_all(\"td\", {\"class\":\"precip\"})[i].text \n",
+        " \n",
+        "            dict[\"wind\"]= items.find_all(\"td\", {\"class\":\"wind\"})[i].text \n",
+        " \n",
+        "            dict[\"humidity\"]= items.find_all(\"td\", {\"class\":\"humidity\"})[i].text \n",
+        " \n",
+        "        except:   \n",
+        " \n",
+        "                     # assign None values if no items are there with specified class \n",
+        " \n",
+        "  \n",
+        " \n",
+        "            dict[\"day\"]=\"None\"\n",
+        " \n",
+        "            dict[\"date\"]=\"None\"\n",
+        " \n",
+        "            dict[\"desc\"]=\"None\"\n",
+        " \n",
+        "            dict[\"temp\"]=\"None\"\n",
+        " \n",
+        "            dict[\"precip\"]=\"None\"\n",
+        " \n",
+        "            dict[\"wind\"]=\"None\"\n",
+        " \n",
+        "            dict[\"humidity\"]=\"None\"\n",
+        " \n",
+        "  \n",
+        " \n",
+        "        # append dictionary values to the list \n",
+        " \n",
+        "        list.append(dict)\n",
+        "import pandas as pd \n",
+        " \n",
+        "convert = pd.DataFrame(list) \n",
+        " \n",
+        "convert.to_csv(\"output.csv\") \n",
+        " \n",
+        "# read csv file using pandas \n",
+        " \n",
+        "a = pd.read_csv(\"output.csv\") \n",
+        " \n",
+        "print(a)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "AttributeError",
+          "evalue": "ignored",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-68-ea75266ff71f>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     12\u001b[0m \u001b[0mlist\u001b[0m \u001b[0;34m=\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     13\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 14\u001b[0;31m \u001b[0mall\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0msoup\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfind\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"div\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m{\u001b[0m\u001b[0;34m\"class\"\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\"locations-title ten-day-page-title\"\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfind\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"h1\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtext\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     15\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     16\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mAttributeError\u001b[0m: 'NoneType' object has no attribute 'find'"
+          ]
+        }
+      ]
+    }
+  ]
+}
